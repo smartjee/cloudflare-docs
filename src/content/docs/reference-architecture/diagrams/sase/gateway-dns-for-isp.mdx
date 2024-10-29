@@ -37,7 +37,7 @@ DNS filtering is then enforced through DNS policies set up by the service provid
 
 ![Figure 2: A DNS policy to prevent users from navigating to malicious domains. The action is to override and redirect the DNS query to a block page hosted by the service provider.](~/assets/images/reference-architecture/gateway-dns-for-isp/gateway-dns-for-isp-image-02.svg)
 
-To achieve more precise control over which domains are allowed or blocked, the service provider can configure additional **Allowed Domain** and **Blocked Domains** policies. By setting these policies with [lower precedence](/cloudflare-one/policies/gateway/order-of-enforcement/#order-of-precedence) than the **Security Risks** policy, the service provider can override the 'Security Risks' policy for specific domains.
+To achieve more precise control over which domains are allowed or blocked, the service provider can configure additional Allowed Domain and Blocked Domains policies. By setting these policies with [lower precedence](/cloudflare-one/policies/gateway/order-of-enforcement/#order-of-precedence) than the Security Risks policy, the service provider can override the Security Risks policy for specific domains.
 
 To streamline the management of allowed and blocked domains, use [lists](/cloudflare-one/policies/gateway/lists/). Lists are easily updated through the dashboard or via [APIs](/api/operations/zero-trust-lists-update-zero-trust-list), making policy adjustments more efficient.
 
