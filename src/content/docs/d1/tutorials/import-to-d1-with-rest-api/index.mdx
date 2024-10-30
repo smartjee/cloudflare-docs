@@ -33,20 +33,19 @@ You must have an existing D1 table which matches the schema of the data you wish
 This tutorial uses example data:
 
 - A database called `d1-import-tutorial`.
-- A table called `D1TargetTable`
-- Within `D1TargetTable`, three columns called `id`, `text`, and `date_added`.
+- A table called `TargetD1Table`
+- Within `TargetD1Table`, three columns called `id`, `text`, and `date_added`.
 
 1. Go to **Storage & Databases > D1**.
 2. Select **Create**.
 3. Name your database. For this tutorial, name your D1 database `d1-import-tutorial`.
 4. (Optional) Provide a location hint. Location hint is an optional parameter you can provide to indicate your desired geographical location for your database. Refer to [Provide a location hint](/d1/build-with-d1/configuration/data-location/#provide-a-location-hint) for more information.
 5. Select **Create**.
-6. Go to **Console**, then paste the following SQL snippet. This creates a table named `D1TargetTable`.
+6. Go to **Console**, then paste the following SQL snippet. This creates a table named `TargetD1Table`.
 
 ```sql
-DROP TABLE IF EXISTS D1TargetTable;
-CREATE TABLE IF NOT EXISTS D1TargetTable (id INTEGER PRIMARY KEY, text TEXT, date_added TEXT);
-);
+DROP TABLE IF EXISTS TargetD1Table;
+CREATE TABLE IF NOT EXISTS TargetD1Table (id INTEGER PRIMARY KEY, text TEXT, date_added TEXT);
 ```
 
 ## 3. Create an `index` file
@@ -60,7 +59,7 @@ Define your variables and set:
 - `D1_API_KEY`: The D1 API token generated in [step 1](#1-create-a-d1-api-token)
 
 ```js title="index"
-const TARGET_TABLE = " "; // for the tutorial, `D1TargetTable`
+const TARGET_TABLE = " "; // for the tutorial, `TargetD1Table`
 const ACCOUNT_ID = " ";
 const DATABASE_ID = " ";
 const D1_API_KEY = ' ';
