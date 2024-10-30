@@ -107,13 +107,157 @@ Prepare the array into a SQL command.
 Placeholder
 ```
 
-## 6. Import to D1
+## 6. Write a function to import to D1
 
 ## 7. Final code
 
 The final code of your `index` file should look as below.
 
 ```js
+import crypto from 'crypto';
+import { faker } from "@faker-js/faker";
+
+const TARGET_TABLE = " ";
+const ACCOUNT_ID = " ";
+const DATABASE_ID = " ";
+const D1_API_KEY = ' ';
+const D1_URL = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/import`;
+const filename = crypto.randomUUID();
+const uploadSize = 2500;
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${D1_API_KEY}`
+};
+
+
+function makeSqlInsert(data, tableName, skipCols = []) {
+  const columns = Object.keys(data[0]).join(",");
+  const values = data.map(row => {
+    return "(" + Object.values(row).map(val => {
+      if (skipCols.includes(val) || val === null || val === 'None' || val === 'NaT' || val === 'nan' || val === '_' || val === '') {
+        return 'NULL';
+      }
+      return `'${String(val).replace(/'/g, "").replace(/"/g, "'")}'`;
+    }).join(",") + ")";
+  }).join(",");
+
+  return `INSERT INTO ${tableName} (${columns}) VALUES ${values};`;
+}
+
+// Generate Fake data
+const data = Array.from({ length: 10 }, () => ({
+  id: crypto.randomUUID(),
+  text: faker.lorem.paragraph(),
+  date_added: new Date().toISOString().slice(0, 19).replace("T", " ")
+}));
+
+const sqlInsert = makeSqlInsert(data, TARGET_TABLE);
+
+// console.log(sqlInsert);
+
+
+async function pollImport(bookmark) {
+  const payload = {
+    action: "poll",
+    current_bookmark: bookmark
+  };
+
+  while (true) {
+    const pollResponse = await fetch(D1_URL, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(payload)
+    });
+
+    const result = await pollResponse.json();
+    console.log("Poll Response:", result.result);
+
+    const { success, error } = result.result;
+
+    if (success || (!success && error === "Not currently importing anything.")) {
+      break;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+}
+
+// Upload to D1
+async function uploadToD1() {
+  // Init upload
+  // Replace the existing hash generation
+  const hash_str = crypto.createHash('md5').update(sqlInsert).digest('hex');
+
+  const initResponse = await fetch(D1_URL, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      action: "init",
+      etag: hash_str
+    })
+  });
+
+  const uploadData = await initResponse.json();
+  const uploadUrl = uploadData.result.upload_url;
+  const filename = uploadData.result.filename;
+
+  // Upload to R2
+  const r2Response = await fetch(uploadUrl, {
+    method: "PUT",
+    body: sqlInsert
+  });
+
+  const r2Etag = r2Response.headers.get("ETag").replace(/"/g, "");
+
+  console.log('Local hash:', hash_str);
+  console.log('R2 hash:', r2Etag);
+
+  // Verify etag
+  if (r2Etag !== hash_str) {
+    throw new Error("ETag mismatch");
+  }
+
+  // Start ingestion
+  const ingestResponse = await fetch(D1_URL, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      action: "ingest",
+      etag: hash_str,
+      filename
+    })
+  });
+
+  const ingestData = await ingestResponse.json();
+  console.log("Ingestion Response:", ingestData);
+
+  // Start polling
+  await pollImport(ingestData.result.at_bookmark);
+
+  return "Import completed successfully";
+}
+
+console.log(await uploadToD1());
+
+// init
+// ingest -> filename
+// poll
+
+async function runImport() {
+  const result = await uploadToD1();
+  console.log(result);
+}
+
+// 3. Run everything
+runImport().catch(console.error);
+```
+
+## 8. Run the code
+
+Run your code.
+
+```sh
+node index.js
 ```
 
 ## Summary
