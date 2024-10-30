@@ -67,13 +67,13 @@ The `warp-debugging-info-<date>-<time>.zip` archive contains the following files
 | `daemon_dns.log` | Contains detailed DNS logs if **Log DNS queries** is enabled in the WARP client. |
 | `daemon.log`                                                                                        | Detailed log of all actions performed by the WARP client, including all communication between the device and Cloudflare's global network. **Note:** This is the most useful debug log.   |
 | `date.txt`  | Date and time (UTC) when you ran the `warp-diag` command.  |
-| `dex.log`  | ? |
+| `dex.log`  | Logs related to [DEX test](/cloudflare-one/insights/dex/tests/) execution. |
 | `dhcp-lease-plists.txt`  | DHCP lease information from `/var/db/dhcpclient/leases/` for each interface that has a DHCP lease. |
 | `dhcp-lease.txt`  | DHCP lease information from `ipconfig` (macOS) or `nmcli` (Linux). |
 | `dig.txt`  | DNS lookup query output for `cloudflare.com` and `apple.com`. |
 | `dns_stats.log`  | Statistics on the DNS queries received and resolved by WARP, generated every two minutes.  |
 | `dns-check.txt` | Verifies that the WARP DNS servers are set as system default. For [operating modes](/cloudflare-one/connections/connect-devices/warp/configure-warp/warp-modes/) where DNS filtering is enabled, this file contains the IPs of the local WARP DNS proxy (`127.0.2.2:0`, `127.0.2.3:0`, `[fd01:db8:1111::2]:0`, and `[fd01:db8:1111::3]:0`). |
-| `dynamic.log` | ? |
+| `dynamic.log` | Reserved for use by Cloudflare Support. |
 | `etc-hosts.txt`  | Static DNS config of device.  |
 | `firewall-pfctl-all.txt` | Packet filter (pf) firewall configuration (macOS only). |
 | `firewall-rules.txt` | The [system firewall rules](/cloudflare-one/connections/connect-devices/warp/configure-warp/route-traffic/warp-architecture/#system-firewall) configured by WARP. |
@@ -81,7 +81,7 @@ The `warp-debugging-info-<date>-<time>.zip` archive contains the following files
 | `gui-log.log`  | Log file for the GUI app that users interact with. |
 | `hostname.txt` | Name of the device.  |
 | `ifconfig.txt` <br/> `ipconfig.txt`  | IP configuration of each network interface.  |
-| `installed_applications.text` | List of installed applications. |
+| `installed_applications.txt` | List of installed applications. |
 | `installed_cert.pem` | [Root certificate](/cloudflare-one/connections/connect-devices/warp/user-side-certificates/) installed on the system. |
 | `installer.log` <br/> `msi-installer.log` | MSI or PKG installation log.|
 | `InstallHistory.plist` <br/> `macos_installer.log` | macOS software installation logs. |
