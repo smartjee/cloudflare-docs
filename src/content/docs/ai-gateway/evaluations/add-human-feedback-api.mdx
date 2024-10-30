@@ -39,7 +39,7 @@ The `cf-aig-log-id` is a unique identifier for the specific log entry to which y
 
 ### Method 1: Locate the `cf-aig-log-id` in the request response
 
-This method allows you to directly find the `cf-aig-log-id` within the body of the response returned by the AI Gateway. This is the most straightforward approach if you have access to the original API response.
+This method allows you to directly find the `cf-aig-log-id` within the header of the response returned by the AI Gateway. This is the most straightforward approach if you have access to the original API response.
 
 The steps below outline how to do this.
 
@@ -120,6 +120,22 @@ In the example below, the `id` is `01JADMCQQQBWH3NXZ5GCRN98DP`.
 	},
 	"success": true
 }
+```
+
+### Method 3: Retrieve the `cf-aig-log-id` via a binding
+
+You can also retrieve the `cf-aig-log-id` using a binding, which streamlines the process. Here’s how to retrieve the log ID directly:
+
+```bash
+        const resp = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
+            prompt: 'something'
+        }, {
+            gateway: {
+                id: 'gateway_id'
+            }
+        })
+
+        const my_log_id = env.AI.aiGatewayLogId
 ```
 
 ## 4. Submit feedback via PATCH request
