@@ -20,8 +20,109 @@ In this tutorial, you will learn how to import a database into D1 using REST API
 
 <Render file="prereqs" product="workers" />
 
-## Generate synthetic data
+## 1. Create a D1 API token
 
-## Create an API token
+To use REST APIs, you need to generate an API token to authenticate your API requests. You can do this through the Cloudflare dashboard.
 
-##
+<Render file="generate-d1-api-token" product="d1" />
+
+## 2. Create the target table
+
+You must have an existing D1 table which matches the schema of the data you wish to import.
+
+This tutorial uses example data:
+
+- A database called `d1-import-tutorial`.
+- A table called `D1TargetTable`
+- Within `D1TargetTable`, three columns called `id`, `text`, and `date_added`.
+
+1. Go to **Storage & Databases > D1**.
+2. Select **Create**.
+3. Name your database. For this tutorial, name your D1 database `d1-import-tutorial`.
+4. (Optional) Provide a location hint. Location hint is an optional parameter you can provide to indicate your desired geographical location for your database. Refer to [Provide a location hint](/d1/build-with-d1/configuration/data-location/#provide-a-location-hint) for more information.
+5. Select **Create**.
+6. Go to **Console**, then paste the following SQL snippet. This creates a table named `D1TargetTable`.
+
+```sql
+DROP TABLE IF EXISTS D1TargetTable;
+CREATE TABLE IF NOT EXISTS D1TargetTable (id INTEGER PRIMARY KEY, text TEXT, date_added TEXT);
+);
+```
+
+## 3. Create an `index` file
+
+Create a new file called `index`. This file will contain the code which uses REST API to import your data to a D1 database.
+
+Define your variables and set:
+- `TARGET_TABLE`: The target table name
+- `ACCOUNT_ID`: The account ID (you can find this in the Cloudflare dashboard > **Workers & Pages**)
+- `DATABASE_ID`: The D1 database ID (you can find this in the Cloudflare dashboard > **Storage & Databases** > **D1 SQL Database** > your database)
+- `D1_API_KEY`: The D1 API token generated in [step 1](#1-create-a-d1-api-token)
+
+```js title="index"
+const TARGET_TABLE = " "; // for the tutorial, `D1TargetTable`
+const ACCOUNT_ID = " ";
+const DATABASE_ID = " ";
+const D1_API_KEY = ' ';
+const D1_URL = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/import`;
+const filename = crypto.randomUUID();
+const uploadSize = 2500;
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${D1_API_KEY}`
+};
+```
+
+## 4. Generate example data (optional)
+
+In practice, you may already have the data you wish to import to a D1 database.
+
+This tutorial generates example data to demonstrate the import process.
+
+1. Install the `@faker-js/faker` module.
+
+```sh
+npm install @faker-js/faker
+```
+
+2. Add the following code at the beginning of the `index` file. This code creates an array called `data` with 10 array elements, where each array element contains an object with `id`, `text`, and `date_added`. Each array element corresponds to a table row.
+
+```js
+import crypto from 'crypto';
+import { faker } from "@faker-js/faker";
+
+// Generate Fake data
+const data = Array.from({ length: 10 }, () => ({
+  id: crypto.randomUUID(),
+  text: faker.lorem.paragraph(),
+  date_added: new Date().toISOString().slice(0, 19).replace("T", " ")
+}));
+```
+
+## 5. Prepare the SQL command
+
+Prepare the array into a SQL command.
+
+```js
+Placeholder
+```
+
+## 6. Import to D1
+
+## 7. Final code
+
+The final code of your `index` file should look as below.
+
+```js
+```
+
+## Summary
+
+By completing this tutorial, you have
+
+1. Created an API token.
+2. Created a target database and table.
+3. Generated example data.
+4. Prepared the example data into a SQL command.
+5. Imported your example data into the D1 target table using REST API.
+
