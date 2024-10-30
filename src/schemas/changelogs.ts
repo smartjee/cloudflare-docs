@@ -10,20 +10,11 @@ export const changelogsSchema = z.object({
 		.object({
 			publish_date: z.string(),
 			title: z.string().optional(),
+			description: z.string().optional(),
+			individual_page: z.boolean().optional(),
+			link: z.string().optional(),
 			scheduled: z.boolean().optional(),
 			scheduled_date: z.string().optional(),
 		})
-		.and(
-			z
-				.object({
-					individual_page: z.boolean(),
-					link: z.string(),
-				})
-				.or(
-					z.object({
-						description: z.string(),
-					}),
-				),
-		)
 		.array(),
 });
